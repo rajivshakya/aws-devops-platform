@@ -69,6 +69,6 @@ Thumbs.db
 __pycache__/
 *.pyc
 
-*.md
+HLD.md
 user.md
 bootstrap/
