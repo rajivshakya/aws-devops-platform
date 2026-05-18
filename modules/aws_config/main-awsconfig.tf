@@ -8,6 +8,18 @@ resource "aws_s3_bucket" "config_bucket" {
   force_destroy = true
 }
 
+resource "aws_s3_bucket_versioning" "config_bucket_versioning" {
+
+  bucket = aws_s3_bucket.config_bucket.id
+
+  versioning_configuration {
+
+    status = "Enabled"
+
+  }
+
+}
+
 #################################################
 # IAM ROLE FOR AWS CONFIG
 #################################################

@@ -8,6 +8,18 @@ resource "aws_s3_bucket" "cloudtrail_logs" {
   force_destroy = true
 
 }
+resource "aws_s3_bucket_versioning" "cloudtrail_logs_versioning" {
+
+  bucket = aws_s3_bucket.cloudtrail_logs.id
+
+  versioning_configuration {
+
+    status = "Enabled"
+
+  }
+
+}
+
 data "aws_caller_identity" "current" {}
 #################################################
 # S3 BUCKET POLICY FOR CLOUDTRAIL
