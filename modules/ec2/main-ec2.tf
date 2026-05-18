@@ -40,6 +40,13 @@ resource "aws_launch_template" "app_lt" {
     name = var.instance_profile_name
 
   }
+  metadata_options {
+
+  http_endpoint = "enabled"
+
+  http_tokens = "required"
+
+}
 
   user_data = base64encode(<<-EOF
               #!/bin/bash

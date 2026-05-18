@@ -14,7 +14,8 @@ resource "aws_vpc" "main" {
 }
 
 data "aws_availability_zones" "available" {}
-
+#tfsec:ignore:aws-ec2-no-public-ip-subnet
+# Reason: Public subnet required for ALB
 resource "aws_subnet" "public_subnet_1" {
 
   vpc_id = aws_vpc.main.id
