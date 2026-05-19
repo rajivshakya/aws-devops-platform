@@ -1,7 +1,8 @@
 #################################################
 # S3 BUCKET FOR CLOUDTRAIL LOGS
 #################################################
-
+#tfsec:ignore:aws-cloudtrail-require-bucket-access-logging
+# Reason: Access logging skipped for lab environment
 resource "aws_s3_bucket" "cloudtrail_logs" {
 
   bucket = "${var.project_name}-${var.environment}-cloudtrail-logs"
@@ -114,7 +115,8 @@ resource "aws_s3_bucket_policy" "cloudtrail_policy" {
 #################################################
 # CLOUDTRAIL
 #################################################
-
+#tfsec:ignore:aws-cloudtrail-ensure-cloudwatch-integration
+# Reason: CloudWatch integration skipped for lab environment
 resource "aws_cloudtrail" "main" {
 
   name = "${var.project_name}-${var.environment}-trail"

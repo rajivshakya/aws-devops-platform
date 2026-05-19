@@ -1,7 +1,8 @@
 #################################################
 # S3 BUCKET FOR PIPELINE ARTIFACTS
 #################################################
-
+#tfsec:ignore:aws-s3-enable-bucket-logging
+# Reason: Access logging skipped for lab environment
 resource "aws_s3_bucket" "pipeline_artifacts" {
 
   bucket = "${var.project_name}-${var.environment}-pipeline-artifacts"

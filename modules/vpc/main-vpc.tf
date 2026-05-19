@@ -1,3 +1,5 @@
+#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
+# Reason: VPC Flow Logs skipped for lab environment
 resource "aws_vpc" "main" {
 
   cidr_block = var.vpc_cidr
@@ -15,7 +17,7 @@ resource "aws_vpc" "main" {
 
 data "aws_availability_zones" "available" {}
 #tfsec:ignore:aws-ec2-no-public-ip-subnet
-# Reason: Public subnet required for ALB
+# Reason: Public subnet required for internet-facing infrastructure
 resource "aws_subnet" "public_subnet_1" {
 
   vpc_id = aws_vpc.main.id
@@ -33,7 +35,8 @@ resource "aws_subnet" "public_subnet_1" {
   }
 
 }
-
+#tfsec:ignore:aws-ec2-no-public-ip-subnet
+# Reason: Public subnet required for internet-facing infrastructure
 resource "aws_subnet" "public_subnet_2" {
 
   vpc_id = aws_vpc.main.id
