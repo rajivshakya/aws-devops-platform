@@ -31,6 +31,8 @@ resource "aws_s3_bucket_public_access_block" "aws_config" {
   restrict_public_buckets = true
 
 }
+#tfsec:ignore:aws-s3-encryption-customer-key
+# Reason: Using AES256 encryption for lab environment
 resource "aws_s3_bucket_server_side_encryption_configuration" "config_bucket_encryption" {
 
   bucket = aws_s3_bucket.config_bucket.id
