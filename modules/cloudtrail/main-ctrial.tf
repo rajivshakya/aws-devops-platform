@@ -29,7 +29,21 @@ resource "aws_s3_bucket_public_access_block" "cloudtrail_logs_pab" {
   restrict_public_buckets = true
 
 }
+resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail_encryption" {
 
+  bucket = aws_s3_bucket.cloudtrail_logs.id
+
+  rule {
+
+    apply_server_side_encryption_by_default {
+
+      sse_algorithm = "AES256"
+
+    }
+
+  }
+
+}
 data "aws_caller_identity" "current" {}
 #################################################
 # S3 BUCKET POLICY FOR CLOUDTRAIL
