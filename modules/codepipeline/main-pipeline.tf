@@ -30,6 +30,22 @@ resource "aws_s3_bucket_public_access_block" "codepipeline" {
   restrict_public_buckets = true
 
 }
+resource "aws_s3_bucket_server_side_encryption_configuration" "pipeline_artifacts_encryption" {
+
+  bucket = aws_s3_bucket.pipeline_artifacts.id
+
+  rule {
+
+    apply_server_side_encryption_by_default {
+
+      sse_algorithm = "AES256"
+
+    }
+
+  }
+
+}
+
 #################################################
 # IAM ROLE FOR CODEPIPELINE
 #################################################
