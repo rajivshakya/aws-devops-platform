@@ -1,13 +1,53 @@
 #################################################
 # S3 BUCKET FOR AWS CONFIG
 #################################################
-
+#tfsec:ignore:aws-s3-enable-bucket-logging
+# Reason: Access logging skipped for lab environment
 resource "aws_s3_bucket" "config_bucket" {
 
   bucket = "${var.project_name}-${var.environment}-config-logs"
   force_destroy = true
 }
 
+resource "aws_s3_bucket_versioning" "config_bucket_versioning" {
+
+  bucket = aws_s3_bucket.config_bucket.id
+
+  versioning_configuration {
+
+    status = "Enabled"
+
+  }
+
+}
+
+resource "aws_s3_bucket_public_access_block" "aws_config" {
+
+  bucket = aws_s3_bucket.config_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+
+}
+#tfsec:ignore:aws-s3-encryption-customer-key
+# Reason: Using AES256 encryption for lab environment
+resource "aws_s3_bucket_server_side_encryption_configuration" "config_bucket_encryption" {
+
+  bucket = aws_s3_bucket.config_bucket.id
+
+  rule {
+
+    apply_server_side_encryption_by_default {
+
+      sse_algorithm = "AES256"
+
+    }
+
+  }
+
+}
 #################################################
 # IAM ROLE FOR AWS CONFIG
 #################################################

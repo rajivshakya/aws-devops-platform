@@ -37,7 +37,8 @@ resource "aws_lb_target_group" "app_tg" {
   }
 
 }
-
+#tfsec:ignore:aws-elb-alb-not-public
+# Reason: Internet-facing ALB required for public application access
 resource "aws_lb" "app_alb" {
 
   name = "${var.project_name}-${var.environment}-alb"
@@ -53,7 +54,7 @@ resource "aws_lb" "app_alb" {
   subnets = var.public_subnet_ids
 
   enable_deletion_protection = false
-
+  drop_invalid_header_fields = true
   tags = {
 
     Name = "${var.project_name}-${var.environment}-alb"
@@ -61,7 +62,7 @@ resource "aws_lb" "app_alb" {
   }
 
 }
-
+#tfsec:ignore:aws-elb-http-not-used
 resource "aws_lb_listener" "http_listener" {
 
   load_balancer_arn = aws_lb.app_alb.arn

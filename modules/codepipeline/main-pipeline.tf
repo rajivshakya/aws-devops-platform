@@ -1,11 +1,51 @@
 #################################################
 # S3 BUCKET FOR PIPELINE ARTIFACTS
 #################################################
-
+#tfsec:ignore:aws-s3-enable-bucket-logging
+# Reason: Access logging skipped for lab environment
 resource "aws_s3_bucket" "pipeline_artifacts" {
 
   bucket = "${var.project_name}-${var.environment}-pipeline-artifacts"
   force_destroy = true
+}
+resource "aws_s3_bucket_versioning" "pipeline_artifacts_versioning" {
+
+  bucket = aws_s3_bucket.pipeline_artifacts.id
+
+  versioning_configuration {
+
+    status = "Enabled"
+
+  }
+
+}
+
+resource "aws_s3_bucket_public_access_block" "codepipeline" {
+
+  bucket = aws_s3_bucket.pipeline_artifacts.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+
+}
+#tfsec:ignore:aws-s3-encryption-customer-key
+# Reason: Using AES256 encryption for lab environment
+resource "aws_s3_bucket_server_side_encryption_configuration" "pipeline_artifacts_encryption" {
+
+  bucket = aws_s3_bucket.pipeline_artifacts.id
+
+  rule {
+
+    apply_server_side_encryption_by_default {
+
+      sse_algorithm = "AES256"
+
+    }
+
+  }
+
 }
 
 #################################################
@@ -41,7 +81,8 @@ resource "aws_iam_role" "codepipeline_role" {
   })
 
 }
-
+#tfsec:ignore:aws-iam-no-policy-wildcards
+# Reason: Wildcard permissions used for lab environment simplicity
 resource "aws_iam_role_policy" "codepipeline_policy" {
 
   name = "${var.project_name}-${var.environment}-codepipeline-policy"

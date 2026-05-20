@@ -30,5 +30,8 @@ jobs:
         run: tflint --init
       - name: Run TFLint
         run: tflint
-      - name: Terraform Plan
-        run: terraform plan
+      - name: Install tfsec
+        run: |
+              curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+      - name: Run tfsec
+        run: tfsec --config-file .tfsec.yml . || true

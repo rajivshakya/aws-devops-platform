@@ -1,7 +1,9 @@
 ###########################################
 ##  Security Group for ALB                #
 ###########################################
-
+#tfsec:ignore:aws-ec2-no-public-ingress-sgr
+#tfsec:ignore:aws-ec2-no-public-egress-sgr
+# Reason: Internet-facing ALB requires public access
 resource "aws_security_group" "alb_sg" {
 
   name = "${var.project_name}-${var.environment}-alb-sg"
@@ -40,6 +42,8 @@ resource "aws_security_group" "alb_sg" {
 ###########################################
 ##  Security Group for Allication Nodes  #
 ###########################################
+#tfsec:ignore:aws-ec2-no-public-egress-sgr
+# Reason: Application servers require outbound internet access
 resource "aws_security_group" "app_sg" {
 
   name = "${var.project_name}-${var.environment}-app-sg"
@@ -49,7 +53,7 @@ resource "aws_security_group" "app_sg" {
   vpc_id = var.vpc_id
 
   ingress {
-
+    description = "Allow HTTP traffic from ALB"
     from_port = 80
     to_port   = 80
     protocol  = "tcp"
@@ -61,7 +65,7 @@ resource "aws_security_group" "app_sg" {
   }
 
   egress {
-
+    description = "Allow outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"

@@ -1,11 +1,50 @@
 #################################################
 # S3 BUCKET FOR CLOUDTRAIL LOGS
 #################################################
-
+#tfsec:ignore:aws-cloudtrail-require-bucket-access-logging
+# Reason: Access logging skipped for lab environment
 resource "aws_s3_bucket" "cloudtrail_logs" {
 
   bucket = "${var.project_name}-${var.environment}-cloudtrail-logs"
   force_destroy = true
+
+}
+resource "aws_s3_bucket_versioning" "cloudtrail_logs_versioning" {
+
+  bucket = aws_s3_bucket.cloudtrail_logs.id
+
+  versioning_configuration {
+
+    status = "Enabled"
+
+  }
+
+}
+resource "aws_s3_bucket_public_access_block" "cloudtrail_logs_pab" {
+
+  bucket = aws_s3_bucket.cloudtrail_logs.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+
+}
+#tfsec:ignore:aws-s3-encryption-customer-key
+# Reason: Using AES256 encryption for lab environment
+resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail_encryption" {
+
+  bucket = aws_s3_bucket.cloudtrail_logs.id
+
+  rule {
+
+    apply_server_side_encryption_by_default {
+
+      sse_algorithm = "AES256"
+
+    }
+
+  }
 
 }
 data "aws_caller_identity" "current" {}
@@ -78,7 +117,11 @@ resource "aws_s3_bucket_policy" "cloudtrail_policy" {
 #################################################
 # CLOUDTRAIL
 #################################################
+#tfsec:ignore:aws-cloudtrail-enable-at-rest-encryption
+# Reason: KMS encryption skipped for lab environment
 
+#tfsec:ignore:aws-cloudtrail-ensure-cloudwatch-integration
+# Reason: CloudWatch integration skipped for lab environment
 resource "aws_cloudtrail" "main" {
 
   name = "${var.project_name}-${var.environment}-trail"
@@ -88,7 +131,7 @@ resource "aws_cloudtrail" "main" {
   include_global_service_events = true
 
   is_multi_region_trail = true
-
+  enable_log_file_validation = true
   enable_logging = true
   depends_on = [
   aws_s3_bucket_policy.cloudtrail_policy
