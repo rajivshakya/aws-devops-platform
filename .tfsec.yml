@@ -9,3 +9,4 @@ exclude:
   - aws-cloudtrail-ensure-cloudwatch-integration
   - aws-s3-enable-bucket-logging
   - aws-cloudtrail-require-bucket-access-logging
+  - aws-ec2-require-vpc-flow-logs-for-all-vpcs
