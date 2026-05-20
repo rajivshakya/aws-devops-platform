@@ -30,6 +30,8 @@ resource "aws_s3_bucket_public_access_block" "codepipeline" {
   restrict_public_buckets = true
 
 }
+#tfsec:ignore:aws-s3-encryption-customer-key
+# Reason: Using AES256 encryption for lab environment
 resource "aws_s3_bucket_server_side_encryption_configuration" "pipeline_artifacts_encryption" {
 
   bucket = aws_s3_bucket.pipeline_artifacts.id
@@ -79,7 +81,8 @@ resource "aws_iam_role" "codepipeline_role" {
   })
 
 }
-
+#tfsec:ignore:aws-iam-no-policy-wildcards
+# Reason: Wildcard permissions used for lab environment simplicity
 resource "aws_iam_role_policy" "codepipeline_policy" {
 
   name = "${var.project_name}-${var.environment}-codepipeline-policy"

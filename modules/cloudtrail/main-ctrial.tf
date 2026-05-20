@@ -30,6 +30,8 @@ resource "aws_s3_bucket_public_access_block" "cloudtrail_logs_pab" {
   restrict_public_buckets = true
 
 }
+#tfsec:ignore:aws-s3-encryption-customer-key
+# Reason: Using AES256 encryption for lab environment
 resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail_encryption" {
 
   bucket = aws_s3_bucket.cloudtrail_logs.id
@@ -115,6 +117,9 @@ resource "aws_s3_bucket_policy" "cloudtrail_policy" {
 #################################################
 # CLOUDTRAIL
 #################################################
+#tfsec:ignore:aws-cloudtrail-enable-at-rest-encryption
+# Reason: KMS encryption skipped for lab environment
+
 #tfsec:ignore:aws-cloudtrail-ensure-cloudwatch-integration
 # Reason: CloudWatch integration skipped for lab environment
 resource "aws_cloudtrail" "main" {
