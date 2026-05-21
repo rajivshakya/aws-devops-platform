@@ -48,37 +48,31 @@ resource "aws_launch_template" "app_lt" {
 
 }
 
-  user_data = base64encode(<<-EOF
-              #!/bin/bash
+  user_data = base64encode(<<EOF
+#!/bin/bash
 
-              apt update -y
+apt update -y
 
-              apt install -y apache2 ruby-full wget
+apt install ruby wget nginx -y
 
-              systemctl enable apache2
+cd /home/ubuntu
 
-              systemctl start apache2
+wget https://aws-codedeploy-ap-south-1.s3.ap-south-1.amazonaws.com/latest/install
 
-              echo "<h1>Welcome to AWS DevOps Platform</h1>" > /var/www/html/index.html
+chmod +x ./install
 
-              #################################################
-              # INSTALL CODEDEPLOY AGENT
-              #################################################
+./install auto
 
-              cd /tmp
+systemctl enable codedeploy-agent
 
-              wget https://aws-codedeploy-ap-south-1.s3.ap-south-1.amazonaws.com/latest/install
+systemctl start codedeploy-agent
 
-              chmod +x ./install
+systemctl enable nginx
 
-              ./install auto
+systemctl start nginx
 
-              systemctl enable codedeploy-agent
-
-              systemctl start codedeploy-agent
-
-              EOF
-  )
+EOF
+)
 
   tag_specifications {
 
